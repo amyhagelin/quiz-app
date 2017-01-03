@@ -58,23 +58,38 @@ var questions = [
 
 // FUNCTIONS - render question
 
-function renderStartPage() {
-return '<div>' +
-	'<span>How well do you know Chilean Slang?</span>' +
-	'<button class="start">Start Quiz</button>' +
-'</div>';
-}
+// function renderStartPage() {
+// return '<div>' +
+// 	'<span>How well do you know Chilean Slang?</span>' +
+// 	'<button class="start">Start Quiz</button>' +
+// '</div>';
+// }
 
 // should I render the answers with For Each?
 //Should I render the question and the answers separately?
 function renderQuestion(array) { // array should be questions[number]
-return '<div class="multiple-choice">' +
+var questionHtml = ('<div class="multiple-choice">' +
 	'<span class="question">' + array.text + '</span>' +
-	'<button class="answer">' + array.answers[0] + '</button>'
-	'<button class="answer">' + array.answers[1] + '</button>'
-	'<button class="answer">' + array.answers[2] + '</button>'
-	'<button class="answer">' + array.answers[3] + '</button>' +
-'</div>';
+	'<button answer="'+ array.answers[0].correct +'" class="answer">' + array.answers[0].text + '</button>' +
+	'<button answer="'+ array.answers[1].correct +'" class="answer">' + array.answers[1].text + '</button>' +
+	'<button answer="'+ array.answers[2].correct +'" class="answer">' + array.answers[2].text + '</button>' +
+	'<button answer="'+ array.answers[3].correct +'" class="answer">' + array.answers[3].text + '</button>' +
+'</div>');
+$("#multiple-choice").prepend(questionHtml);
+}
+
+function renderCorrect() {
+var correct = ('<div class="answer">' +
+	'<span class="correct">Yay! You got it!</span>' +
+	'<button class="next">Next</button>');
+$("#multiple-choice").append(correct);
+}
+
+function renderIncorrect() {
+var incorrect = ('<div class="answer">' +
+	'<span class="correct">Boo! Better luck next time!</span>' +
+	'<button class="next">Next</button>');
+$("#multiple-choice").append(incorrect);
 }
 
 function evaluateAnswer(selection) { // selection should be answer clicked
@@ -88,10 +103,33 @@ if (questions[0].answers[0].correct === true) {
 
 // EVENT LISTENERS
 
-$( document ).ready(function() {
-    console.log( "ready!" );
-    renderStartPage();
-});
+ $(document).on('click', 'button.start', function(event) { 
+	// event.preventDefault();
+	console.log("I was clicked");
+	$( "#start-page" ).hide();
+	console.log(questions[currentQuestionIndex]);
+	renderQuestion(questions[currentQuestionIndex]);
+	$(document).on('click', 'button.answer', function(event) {
+		console.log("An answer has been clicked");
+		console.log($(this).attr('answer'));
+		var selection = $(this).attr('answer');
+		console.log(selection);
+		if (selection === "true") {
+  		console.log("correct");
+		renderCorrect();
+		};
+		if (selection === "false") {
+  		console.log("incorrect");
+		renderIncorrect();
+		};
+// how do I get ths to loop back through the next question when Next button is clicked?
+	});
+  });
+
+// $( document ).ready(function() {
+//     console.log( "ready!" );
+//     renderStartPage();
+// });
 // home page ie quiz title and start quiz button (hide all others?)
 // when you click the start button, show render first question
 
